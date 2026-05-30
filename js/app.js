@@ -21,28 +21,25 @@ document.addEventListener("DOMContentLoaded", () => {
         const markerNumber = index + 1; // Numerek (1, 2, 3...)
         
         // --- 1. GENEROWANIE OBIEKTU 3D W AR ---
-        // Kontener grupy, żebySphere i Text były razem
         const wrapper = document.createElement('a-entity');
         wrapper.setAttribute('position', marker.position); 
 
-        // KULA (Zamiast stożka)
+        // KULA
         const visualSphere = document.createElement('a-sphere');
         visualSphere.setAttribute('radius', '0.03'); // Promień 3cm
         visualSphere.setAttribute('color', marker.color);
-        visualPoint.setAttribute('position', '0 0 0'); // Środek wrappera
+        // TUTAJ BYŁ BŁĄD - poprawione na visualSphere!
+        visualSphere.setAttribute('position', '0 0 0'); 
         
         wrapper.appendChild(visualSphere);
 
         // NUMEREK W 3D (A-Text)
         const visualText = document.createElement('a-text');
-        visualText.setAttribute('value', markerNumber); // Wstawiamy numer
-        visualText.setAttribute('color', '#111111'); // Ciemny tekst na jasnej kuli
-        visualText.setAttribute('align', 'center'); // Środkowanie
-        visualText.setAttribute('width', '1'); // Szerokość pola tekstowego
-        visualText.setAttribute('wrap-count', '10'); // Skalowanie czcionki
-        
-        // Przesuwamy tekst leciutko do przodu na osi Z (np. o 3.1cm), 
-        // żeby nie "wchodził" w kulę i był czytelny (nie migotał - błąd Z-fighting)
+        visualText.setAttribute('value', markerNumber);
+        visualText.setAttribute('color', '#111111');
+        visualText.setAttribute('align', 'center');
+        visualText.setAttribute('width', '1');
+        visualText.setAttribute('wrap-count', '10');
         visualText.setAttribute('position', '0 0 0.031'); 
         
         wrapper.appendChild(visualText);
@@ -52,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const uiButton = document.createElement('div');
         uiButton.className = 'ui-marker-btn';
         uiButton.style.backgroundColor = marker.color; 
-        uiButton.innerText = markerNumber; // Ten sam numerek co w 3D!
+        uiButton.innerText = markerNumber; 
 
         uiButton.addEventListener('click', (evt) => {
             evt.preventDefault();
@@ -83,24 +80,21 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // --- NOWA SEKCJA: LOGIKA WYKRYWANIA SILNIKA (MindAR Eventy) ---
-    // Event: Silnik znaleziony -> pokaż menu przycisków
+    // --- LOGIKA WYKRYWANIA SILNIKA ---
     anchor.addEventListener("targetFound", (event) => {
         console.log("Silnik wykryty - pokazuję menu.");
         buttonsContainer.classList.add('visible');
     });
 
-    // Event: Silnik zgubiony -> schowaj menu przycisków
     anchor.addEventListener("targetLost", (event) => {
         console.log("Silnik zgubiony - chowam menu.");
         buttonsContainer.classList.remove('visible');
-        // Opcjonalnie: zamknij też panel opisowy, jeśli był otwarty
         infoPanel.classList.remove('visible');
         infoPanel.classList.add('hidden');
     });
 
 
-    // --- LOGIKA LATARKI (Zostaje bez zmian) ---
+    // --- LOGIKA LATARKI ---
     let isTorchOn = false;
     if (flashlightBtn) {
         flashlightBtn.addEventListener('click', async (e) => {
