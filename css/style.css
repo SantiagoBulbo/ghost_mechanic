@@ -187,3 +187,11 @@ body, html {
 .ui-marker-btn:active {
     transform: scale(0.85); /* Fajny efekt wciśnięcia palcem */
 }
+
+/* Stylowanie ikonek SVG wewnątrz przycisków */
+.ui-marker-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor; /* Ikona dziedziczy kolor tekstu (czarny lub biały) */
+    transition: transform 0.2s ease;
+}
