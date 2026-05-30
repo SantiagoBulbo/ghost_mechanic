@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const flashlightBtn = document.getElementById('flashlight-btn');
     const buttonsContainer = document.getElementById('marker-buttons-container');
 
-    // Baza danych wskaźników z dodanym kodem SVG dla KONTROLEK Z AUTA
+    // Baza danych wskaźników z NOWYMI, REALISTYCZNYMI IKONAMI
     const carData = {
         markers: [
             { 
@@ -16,8 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 color: "#FFC107", 
                 position: "-0.4 0.1 0.1", 
                 desc: "Sprawdzaj poziom oleju na ostudzonym silniku. Poziom powinien znajdować się między znacznikami MIN i MAX.",
-                // Ikona Oliwiarki
-                icon: `<svg viewBox="0 0 24 24"><path d="M19 15c0-4.62-3.5-8-8-8H6c-1.65 0-3 1.35-3 3v2c0 1.65 1.35 3 3 3h1.5v3.5c0 1.38 1.12 2.5 2.5 2.5h5c1.38 0 2.5-1.12 2.5-2.5V15H20c.55 0 1-.45 1-1s-.45-1-1-1h-1zm-9 5.5V15H7.5v5.5H10z"/><path d="M13 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>`
+                // Ikona: Kółko na palec i długi bagnet z nacięciami MIN/MAX
+                icon: `<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="8" x2="12" y2="22"/><line x1="9" y1="18" x2="15" y2="18"/><line x1="9" y1="15" x2="15" y2="15"/></svg>`
             },
             { 
                 id: "washer", 
@@ -25,8 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 color: "#00BFFF", 
                 position: "0.5 -0.2 0", 
                 desc: "Używaj płynu zimowego (do -20°C). Korek ma zazwyczaj niebieski kolor i symbol szyby.",
-                // Ikona Szyby i Wycieraczki (z kropelkami)
-                icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16c2-4 6-6 8-6s6 2 8 6"/><path d="M12 10v-4"/><path d="M8 10v-2"/><path d="M16 10v-2"/><circle cx="12" cy="3" r="1"/></svg>`
+                // Ikona: Szyba, wycieraczka i kropelki
+                icon: `<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16s5-7 9-7 9 7 9 7"/><path d="M12 16v-6"/><path d="M12 4v2"/><path d="M8 5v1"/><path d="M16 5v1"/></svg>`
             },
             { 
                 id: "coolant", 
@@ -34,38 +34,35 @@ document.addEventListener("DOMContentLoaded", () => {
                 color: "#FF4500", 
                 position: "0.1 0.4 0.1", 
                 desc: "UWAGA: Układ znajduje się pod ciśnieniem! Otwieraj zbiornik wyrównawczy tylko na całkowicie zimnym silniku.",
-                // Ikona Termometru w wodzie (Chłodziwo)
-                icon: `<svg viewBox="0 0 24 24"><path d="M15 13V5c0-1.66-1.34-3-3-3S9 3.34 9 5v8c-1.21.91-2 2.37-2 4 0 2.76 2.24 5 5 5s5-2.24 5-5c0-1.63-.79-3.09-2-4zm-3 7c-1.1 0-2-.9-2-2 0-.74.4-1.38 1-1.73V5c0-.55.45-1 1-1s1 .45 1 1v6.27c.6.35 1 1.01 1 1.73 0 1.1-.9 2-2 2z"/><path d="M3 19c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm18-4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>`
+                // Ikona: Fizyczna chłodnica z żeberkami i korkiem
+                icon: `<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="14" rx="1"/><line x1="8" y1="6" x2="8" y2="20"/><line x1="16" y1="6" x2="16" y2="20"/><line x1="4" y1="10" x2="20" y2="10"/><line x1="4" y1="16" x2="20" y2="16"/><path d="M8 3v3"/><path d="M16 3v3"/><line x1="10" y1="3" x2="14" y2="3"/></svg>`
             }
         ]
     };
 
     carData.markers.forEach((marker) => {
-        // --- 1. GENEROWANIE OBIEKTU 3D W AR ---
+        // --- 1. GENEROWANIE OBIEKTU 3D W AR (Wracamy do kulek!) ---
         const wrapper = document.createElement('a-entity');
         wrapper.setAttribute('position', marker.position); 
 
-        // Tylko czysty, elegancki stożek (bez tekstu!)
-        const visualCone = document.createElement('a-cone');
-        visualCone.setAttribute('radius-bottom', '0.03'); 
-        visualCone.setAttribute('radius-top', '0');       
-        visualCone.setAttribute('height', '0.08');        
-        visualCone.setAttribute('color', marker.color);
-        visualCone.setAttribute('rotation', '180 0 0'); 
-        visualCone.setAttribute('position', '0 0.04 0'); 
+        // Klasyczna, dyskretna kulka
+        const visualSphere = document.createElement('a-sphere');
+        visualSphere.setAttribute('radius', '0.02'); // Zgrabne 2 cm
+        visualSphere.setAttribute('color', marker.color);
+        visualSphere.setAttribute('position', '0 0 0'); 
         
-        wrapper.appendChild(visualCone);
+        wrapper.appendChild(visualSphere);
         anchor.appendChild(wrapper);
 
-        // --- 2. GENEROWANIE PRZYCISKU 2D W INTERFEJSIE Z IKONĄ ---
+        // --- 2. GENEROWANIE PRZYCISKU 2D Z NOWĄ IKONĄ ---
         const uiButton = document.createElement('div');
         uiButton.className = 'ui-marker-btn';
         uiButton.style.backgroundColor = marker.color; 
         
-        // Magia: Wstrzykujemy kod SVG kontrolki do środka przycisku!
+        // Wstrzykujemy nowy kod SVG
         uiButton.innerHTML = marker.icon; 
 
-        // Ustawienie koloru ikony wewnątrz na ciemny dla lepszego kontrastu
+        // Czarny kolor linii wewnątrz ikony
         uiButton.style.color = '#111';
 
         uiButton.addEventListener('click', (evt) => {

@@ -190,8 +190,9 @@ body, html {
 
 /* Stylowanie ikonek SVG wewnątrz przycisków */
 .ui-marker-btn svg {
-    width: 24px;
-    height: 24px;
-    fill: currentColor; /* Ikona dziedziczy kolor tekstu (czarny lub biały) */
+    width: 26px;
+    height: 26px;
+    stroke: currentColor; /* TERAZ UŻYWAMY STROKE DO NOWYCH IKON */
+    fill: none;
     transition: transform 0.2s ease;
 }
