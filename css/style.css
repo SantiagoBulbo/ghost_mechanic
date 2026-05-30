@@ -188,11 +188,10 @@ body, html {
     transform: scale(0.85); /* Fajny efekt wciśnięcia palcem */
 }
 
-/* Stylowanie ikonek SVG wewnątrz przycisków */
-.ui-marker-btn svg {
-    width: 26px;
-    height: 26px;
-    stroke: currentColor; /* TERAZ UŻYWAMY STROKE DO NOWYCH IKON */
-    fill: none;
-    transition: transform 0.2s ease;
+/* Skalowanie obrazków PNG w przyciskach */
+.ui-marker-btn img {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+    pointer-events: none; /* Żeby kliknięcie łapało cały przycisk, a nie sam obrazek */
 }
