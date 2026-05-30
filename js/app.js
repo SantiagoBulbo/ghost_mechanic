@@ -5,7 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const infoDesc = document.getElementById('info-desc');
     const closeBtn = document.getElementById('close-btn');
     const flashlightBtn = document.getElementById('flashlight-btn');
+    const buttonsContainer = document.getElementById('marker-buttons-container'); // Nowy kontener z HTML
 
+    // Baza danych wskaźników
     const carData = {
         markers: [
             { id: "oil", label: "Bagnet oleju", color: "#FFC107", position: "-0.4 0.1 0.1", desc: "Sprawdzaj poziom oleju na ostudzonym silniku. Poziom powinien znajdować się między znacznikami MIN i MAX." },
@@ -14,17 +16,13 @@ document.addEventListener("DOMContentLoaded", () => {
         ]
     };
 
-    carData.markers.forEach(marker => {
+    // Pętla HYBRYDOWA - Generuje 3D i 2D jednocześnie!
+    carData.markers.forEach((marker, index) => {
         
-        // 1. OGROMNY HITBOX (Pół metra!)
-        const hitbox = document.createElement('a-entity');
-        hitbox.setAttribute('geometry', 'primitive: sphere; radius: 0.25'); 
-        // Triki na optymalizację WebGL - 1% przezroczystości, żeby grafika tego nie skasowała
-        hitbox.setAttribute('material', 'color: red; transparent: true; opacity: 0.01'); 
-        hitbox.setAttribute('position', marker.position); 
-        hitbox.setAttribute('class', 'clickable'); 
+        // --- 1. GENEROWANIE OBIEKTU 3D W AR (Tylko do patrzenia) ---
+        const wrapper = document.createElement('a-entity');
+        wrapper.setAttribute('position', marker.position); 
 
-        // 2. WIDZIALNY STOŻEK (Szpic)
         const visualPoint = document.createElement('a-cone');
         visualPoint.setAttribute('radius-bottom', '0.02');
         visualPoint.setAttribute('radius-top', '0');       
@@ -33,10 +31,17 @@ document.addEventListener("DOMContentLoaded", () => {
         visualPoint.setAttribute('rotation', '180 0 0');
         visualPoint.setAttribute('position', '0 0.03 0'); 
         
-        hitbox.appendChild(visualPoint);
+        wrapper.appendChild(visualPoint);
+        anchor.appendChild(wrapper);
 
-        // Funkcja uodporniona na podwójne odpalenia
-        const triggerPanel = (evt) => {
+        // --- 2. GENEROWANIE PRZYCISKU 2D W INTERFEJSIE (Do klikania) ---
+        const uiButton = document.createElement('div');
+        uiButton.className = 'ui-marker-btn';
+        uiButton.style.backgroundColor = marker.color; // Przycisk dostaje kolor wskaźnika
+        uiButton.innerText = index + 1; // Wstawiamy numerek do środka (1, 2, 3...)
+
+        // Pancerny event kliknięcia HTML (Nigdy nie zawodzi)
+        uiButton.addEventListener('click', (evt) => {
             evt.preventDefault();
             evt.stopPropagation();
             
@@ -45,23 +50,28 @@ document.addEventListener("DOMContentLoaded", () => {
             
             infoPanel.classList.remove('hidden');
             infoPanel.classList.add('visible');
-        };
+        });
 
-        // Podpinamy natywne zachowania przeglądarki i mobilne pacnięcia palcem
-        hitbox.addEventListener('click', triggerPanel);
-        hitbox.addEventListener('touchstart', triggerPanel);
-
-        anchor.appendChild(hitbox);
+        // Wstrzykujemy przycisk na ekran pod latarkę
+        buttonsContainer.appendChild(uiButton);
     });
 
-    // Zamykanie panelu przyciskiem
+    // Zamykanie panelu
     closeBtn.addEventListener('click', (event) => {
         event.preventDefault();
         infoPanel.classList.remove('visible');
         infoPanel.classList.add('hidden');
     });
 
-    // Latarka
+    // Zamykanie po kliknięciu w dowolne inne miejsce
+    window.addEventListener('click', (e) => {
+        if (e.target.id !== 'flashlight-btn' && !e.target.closest('#info-panel') && !e.target.closest('.ui-marker-btn')) {
+            infoPanel.classList.remove('visible');
+            infoPanel.classList.add('hidden');
+        }
+    });
+
+    // --- LOGIKA LATARKI (Zostaje bez zmian) ---
     let isTorchOn = false;
     if (flashlightBtn) {
         flashlightBtn.addEventListener('click', async (e) => {
@@ -79,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const capabilities = track.getCapabilities && track.getCapabilities();
                 
                 if (!capabilities || !capabilities.torch) {
-                    alert("Twoja przeglądarka blokuje dostęp do latarki z poziomu strony WWW.");
+                    alert("Twoja przeglądarka blokuje latarkę z poziomu strony WWW.");
                     return;
                 }
 

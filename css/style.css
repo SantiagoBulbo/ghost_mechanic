@@ -140,3 +140,36 @@ body, html {
 #flashlight-btn.active svg {
     stroke: #111; /* Zmiana koloru ikony na ciemny */
 }
+
+/* Kontener na dynamiczne przyciski wskaźników */
+#marker-buttons-container {
+    position: absolute;
+    top: 90px; /* Ustawia się bezpiecznie pod latarką */
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Odstęp między kółkami */
+    pointer-events: auto; /* Musi łapać kliknięcia */
+    z-index: 1001;
+}
+
+/* Wygląd pojedynczego kółka do klikania */
+.ui-marker-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.8);
+    color: #111;
+    font-weight: 900;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.ui-marker-btn:active {
+    transform: scale(0.85); /* Fajny efekt wciśnięcia palcem */
+}
