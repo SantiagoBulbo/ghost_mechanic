@@ -141,16 +141,30 @@ body, html {
     stroke: #111; /* Zmiana koloru ikony na ciemny */
 }
 
-/* Kontener na dynamiczne przyciski wskaźników */
+/* --- Zaktualizowany styl kontenera przycisków --- */
 #marker-buttons-container {
     position: absolute;
-    top: 90px; /* Ustawia się bezpiecznie pod latarką */
+    top: 90px;
     right: 20px;
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Odstęp między kółkami */
-    pointer-events: auto; /* Musi łapać kliknięcia */
+    gap: 15px;
     z-index: 1001;
+
+    /* Domyślnie ukryte i nieklikalne */
+    opacity: 0;
+    pointer-events: none;
+    
+    /* Gładkie pojawianie się */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateX(20px); /* Lekkie odsunięcie w prawo */
+}
+
+/* Klasa włączana przez JS po wykryciu silnika */
+#marker-buttons-container.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0); /* Wraca na miejsce */
 }
 
 /* Wygląd pojedynczego kółka do klikania */
