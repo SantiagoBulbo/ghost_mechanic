@@ -13,6 +13,10 @@
     <link rel="stylesheet" href="css/style.css?v=2.0" />
   </head>
   <body>
+    <div id="splash-screen">
+      <h1 id="splash-title">Ghost Mechanic App</h1>
+      <button id="start-btn">Przejdź dalej</button>
+    </div>
     <div id="ui-container">
       <button id="flashlight-btn" title="Włącz/Wyłącz latarkę">
         <svg
@@ -59,6 +63,13 @@
         id="engine-anchor"
         mindar-image-target="targetIndex: 0"
       ></a-entity>
+      <a-scene
+        mindar-image="imageTargetSrc: assets/oslona.mind; autoStart: false;"
+        color-space="sRGB"
+        renderer="colorManagement: true, physicallyCorrectLights"
+        vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: false"
+      ></a-scene>
     </a-scene>
 
     <script src="js/app.js?v=2.0"></script>

@@ -6,6 +6,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const closeBtn = document.getElementById('close-btn');
     const flashlightBtn = document.getElementById('flashlight-btn');
     const buttonsContainer = document.getElementById('marker-buttons-container');
+    const splashScreen = document.getElementById('splash-screen');
+    const startBtn = document.getElementById('start-btn');
+    const sceneEl = document.querySelector('a-scene');
+
+    startBtn.addEventListener('click', () => {
+        // 1. Znikamy ekran powitalny
+        splashScreen.classList.add('hidden');
+        
+        // 2. Ręcznie wymuszamy start silnika MindAR i prośbę o kamerę
+        sceneEl.systems["mindar-image-system"].start();
+    });
 
     // Baza danych ze ŚCIEŻKAMI DO PLIKÓW PNG
     const carData = {
