@@ -198,35 +198,74 @@ body, html {
 
 /* --- USTAWIENIA DLA ORIENTACJI POZIOMEJ (LANDSCAPE) --- */
 @media screen and (orientation: landscape) {
-    /* Zwężamy panel informacyjny, żeby nie zasłaniał całego silnika w poziomie */
-    #info-panel {
-        width: 60%; /* Zajmuje tylko 60% szerokości ekranu */
-        left: 20%;  /* Wyśrodkowanie */
-        padding: 15px 20px 20px 20px;
-        border-top-left-radius: 15px;
-        border-top-right-radius: 15px;
+    
+    /* --- 1. PRZYCISKI WSKAŹNIKÓW - Zostają na górze, poziomo --- */
+    #marker-buttons-container {
+        top: 20px;
+        right: 80px; /* Odsunięcie w lewo, żeby nie wchodziły na latarkę */
+        flex-direction: row; 
+        gap: 10px;
     }
 
-    /* Zmniejszamy trochę teksty, bo w poziomie jest mniej miejsca na wysokość */
+    /* --- 2. PANEL INFORMACYJNY - Zmiana z dolnego paska na prawy pasek boczny --- */
+    #info-panel {
+        /* Kasujemy styl dla pionu (dolny panel) */
+        bottom: auto; 
+        left: auto;   
+        border-top-right-radius: 0;
+
+        /* NOWE POZYCJONOWANIE - PRAWA STRONA */
+        right: 0; /* Przyklejony do prawej */
+        top: 10px; /* Mały margines od góry, pod ikonkami */
+        
+        /* ROZMIAR */
+        width: 300px; /* Stała szerokość paska bocznego */
+        max-width: 40%; /* Bezpieczeństwo dla małych ekranów */
+        height: calc(100% - 20px); /* Prawie pełna wysokość ekranu minus marginesy */
+        
+        /* Styl zaokrąglenia - tylko na lewej krawędzi */
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 0; /* Prawa krawędź jest płaska, przyklejona do ramki */
+        
+        /* Magia: Zmieniamy animację wyjazdu z osi Y (dół) na oś X (prawo)! */
+        transform: translateX(110%); /* Domyślnie schowany poza prawą krawędzią */
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Nieco wolniej dla elegancji */
+        
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Nadpisujemy klasy widoczności W POZIOMIE (używamy X zamiast Y) */
+    #info-panel.visible {
+        transform: translateX(0); /* Wyjeżdża na ekran */
+    }
+
+    #info-panel.hidden {
+        transform: translateX(110%); /* Wraca za prawą krawędź */
+    }
+
+    /* --- 3. DOSTOSOWANIE TREŚCI WĄSKIEGO PASKA --- */
     #info-title {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+    }
+
+    /* Pigułka do dragowania na górze nie ma sensu w boku - ukrywamy */
+    .drag-pill {
+        display: none;
     }
 
     .panel-content p {
-        font-size: 0.95rem;
-        margin-bottom: 15px;
+        font-size: 0.85rem;
+        margin-bottom: 10px;
+        flex-grow: 1; /* Pcha przycisk zamykania na sam dół */
     }
 
     #close-btn {
         padding: 10px;
-        font-size: 1rem;
-    }
-
-    /* Przesuwamy ikonki nieco wyżej i robimy je ciaśniej */
-    #marker-buttons-container {
-        top: 20px;
-        right: 80px; /* Odsunięcie w lewo, żeby nie wchodziły na latarkę */
-        flex-direction: row; /* Ustawiają się poziomo zamiast pionowo! */
-        gap: 10px;
+        font-size: 0.95rem;
+        width: auto; /* Nie zajmuje całej szerokości wąskiego paska */
     }
 }
