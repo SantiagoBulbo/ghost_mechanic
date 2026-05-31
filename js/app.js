@@ -123,4 +123,12 @@ document.addEventListener("DOMContentLoaded", () => {
             } catch (err) { console.error("Błąd włączania latarki:", err); }
         });
     }
+    // --- RATUNKOWY HACK NA OBRACANIE EKRANU ---
+    // Nasłuchujemy zmiany orientacji urządzenia
+    window.addEventListener("orientationchange", () => {
+        // Czekamy pół sekundy, aż system telefonu skończy animację obracania
+        setTimeout(() => {
+            window.location.reload(); // Odświeżamy stronę!
+        }, 500);
+    });
 });

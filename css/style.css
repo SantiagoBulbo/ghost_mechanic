@@ -195,3 +195,38 @@ body, html {
     object-fit: contain;
     pointer-events: none; /* Żeby kliknięcie łapało cały przycisk, a nie sam obrazek */
 }
+
+/* --- USTAWIENIA DLA ORIENTACJI POZIOMEJ (LANDSCAPE) --- */
+@media screen and (orientation: landscape) {
+    /* Zwężamy panel informacyjny, żeby nie zasłaniał całego silnika w poziomie */
+    #info-panel {
+        width: 60%; /* Zajmuje tylko 60% szerokości ekranu */
+        left: 20%;  /* Wyśrodkowanie */
+        padding: 15px 20px 20px 20px;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+
+    /* Zmniejszamy trochę teksty, bo w poziomie jest mniej miejsca na wysokość */
+    #info-title {
+        font-size: 1.2rem;
+    }
+
+    .panel-content p {
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+    }
+
+    #close-btn {
+        padding: 10px;
+        font-size: 1rem;
+    }
+
+    /* Przesuwamy ikonki nieco wyżej i robimy je ciaśniej */
+    #marker-buttons-container {
+        top: 20px;
+        right: 80px; /* Odsunięcie w lewo, żeby nie wchodziły na latarkę */
+        flex-direction: row; /* Ustawiają się poziomo zamiast pionowo! */
+        gap: 10px;
+    }
+}
