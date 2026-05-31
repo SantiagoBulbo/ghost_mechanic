@@ -199,73 +199,46 @@ body, html {
 /* --- USTAWIENIA DLA ORIENTACJI POZIOMEJ (LANDSCAPE) --- */
 @media screen and (orientation: landscape) {
     
-    /* --- 1. PRZYCISKI WSKAŹNIKÓW - Zostają na górze, poziomo --- */
+    /* 1. PRZYCISKI - Zostają poziomo na górze */
     #marker-buttons-container {
         top: 20px;
-        right: 80px; /* Odsunięcie w lewo, żeby nie wchodziły na latarkę */
+        right: 80px; 
         flex-direction: row; 
         gap: 10px;
     }
 
-    /* --- 2. PANEL INFORMACYJNY - Zmiana z dolnego paska na prawy pasek boczny --- */
+    /* 2. PANEL INFORMACYJNY - Klasyczny wyjazd z dołu, ale tylko po prawej stronie! */
     #info-panel {
-        /* Kasujemy styl dla pionu (dolny panel) */
-        bottom: auto; 
-        left: auto;   
-        border-top-right-radius: 0;
-
-        /* NOWE POZYCJONOWANIE - PRAWA STRONA */
-        right: 0; /* Przyklejony do prawej */
-        top: 10px; /* Mały margines od góry, pod ikonkami */
+        width: 320px; /* Zwężamy go do zgrabnego paska */
+        max-width: 45vw; /* Zabezpieczenie dla mniejszych ekranów */
         
-        /* ROZMIAR */
-        width: 300px; /* Stała szerokość paska bocznego */
-        max-width: 40%; /* Bezpieczeństwo dla małych ekranów */
-        height: calc(100% - 20px); /* Prawie pełna wysokość ekranu minus marginesy */
+        /* Magia Flexboxa: zamiast pchać go po osiach, po prostu każemy mu stanąć po prawej */
+        align-self: flex-end; 
+        margin-right: 20px; /* Lekko odsuwamy od prawej ramki telefonu */
         
-        /* Styl zaokrąglenia - tylko na lewej krawędzi */
+        /* Przywracamy domyślne zaokrąglenia, bo wracamy do wyjazdu z dołu */
         border-top-left-radius: 20px;
-        border-bottom-left-radius: 20px;
-        border-bottom-right-radius: 0; /* Prawa krawędź jest płaska, przyklejona do ramki */
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
         
-        /* Magia: Zmieniamy animację wyjazdu z osi Y (dół) na oś X (prawo)! */
-        transform: translateX(110%); /* Domyślnie schowany poza prawą krawędzią */
-        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Nieco wolniej dla elegancji */
-        
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
+        /* Lekko zmniejszamy odstępy w środku, żeby był kompaktowy */
+        padding: 15px 15px 20px 15px;
     }
 
-    /* Nadpisujemy klasy widoczności W POZIOMIE (używamy X zamiast Y) */
-    #info-panel.visible {
-        transform: translateX(0); /* Wyjeżdża na ekran */
-    }
-
-    #info-panel.hidden {
-        transform: translateX(110%); /* Wraca za prawą krawędź */
-    }
-
-    /* --- 3. DOSTOSOWANIE TREŚCI WĄSKIEGO PASKA --- */
+    /* 3. MNIEJSZE TEKSTY W POZIOMIE */
     #info-title {
         font-size: 1.1rem;
-        margin-bottom: 5px;
-    }
-
-    /* Pigułka do dragowania na górze nie ma sensu w boku - ukrywamy */
-    .drag-pill {
-        display: none;
+        margin-bottom: 10px;
     }
 
     .panel-content p {
-        font-size: 0.85rem;
-        margin-bottom: 10px;
-        flex-grow: 1; /* Pcha przycisk zamykania na sam dół */
+        font-size: 0.9rem;
+        margin-bottom: 15px;
     }
 
     #close-btn {
         padding: 10px;
         font-size: 0.95rem;
-        width: auto; /* Nie zajmuje całej szerokości wąskiego paska */
     }
 }
