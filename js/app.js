@@ -12,11 +12,19 @@ document.addEventListener("DOMContentLoaded", () => {
         markers: [
             { 
                 id: "oil", 
-                label: "Bagnet oleju", 
-                color: "#FFC107", 
+                label: "Wlew oleju", 
+                color: "#ffee00", 
                 position: "-0.4 0.1 0.1", 
-                desc: "Sprawdzaj poziom oleju na ostudzonym silniku. Poziom powinien znajdować się między znacznikami MIN i MAX.",
+                desc: "Pamiętaj, aby poziom oleju był zawsze między MIN a MAX. Używaj oleju zalecanego przez producenta samochodu.",
                 icon: "assets/oil.png" // Podmień na swoje nazwy!
+            },
+            { 
+                id: "oil_dipstick", 
+                label: "Bagnet oleju", 
+                color: "#f3a702", 
+                position: "-0.3 0.07 0.1", 
+                desc: "Bagnet służy do sprawdzania poziomu oleju.Pamiętaj aby samochód stał na poziomym terenie oraz silnik był zimny. Wyciągnij go, wytrzyj, włóż z powrotem i ponownie wyciągnij, aby odczytać poziom.",
+                icon: "assets/bagnet_oleju.png" // Podmień na swoje nazwy!
             },
             { 
                 id: "washer", 
