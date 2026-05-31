@@ -72,11 +72,26 @@ document.addEventListener("DOMContentLoaded", () => {
             evt.preventDefault();
             evt.stopPropagation();
             
-            infoTitle.innerText = marker.label;
-            infoDesc.innerText = marker.desc;
-            
-            infoPanel.classList.remove('hidden');
-            infoPanel.classList.add('visible');
+            // Funkcja, która ładuje nowe dane i wysuwa panel
+            const showNewContent = () => {
+                infoTitle.innerText = marker.label;
+                infoDesc.innerText = marker.desc;
+                infoPanel.classList.remove('hidden');
+                infoPanel.classList.add('visible');
+            };
+
+            // Sprawdzamy, czy panel jest już wysunięty
+            if (infoPanel.classList.contains('visible')) {
+                // Jeśli tak: najpierw go chowamy...
+                infoPanel.classList.remove('visible');
+                infoPanel.classList.add('hidden');
+                
+                // ...czekamy 300 milisekund (tyle trwa zjazd w dół w CSS), a potem pokazujemy nowy!
+                setTimeout(showNewContent, 300);
+            } else {
+                // Jeśli był schowany, po prostu go wysuwamy
+                showNewContent();
+            }
         });
 
         buttonsContainer.appendChild(uiButton);
@@ -139,4 +154,24 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.reload(); // Odświeżamy stronę!
         }, 500);
     });
+
+    // --- OBSŁUGA GESTU SWIPE W DÓŁ (Przeciągnięcie palcem) ---
+    let startY = 0; // Tu zapiszemy, gdzie użytkownik położył palec
+
+    // Kiedy użytkownik dotyka panelu...
+    infoPanel.addEventListener('touchstart', (e) => {
+        startY = e.touches[0].clientY; // Zapisujemy pozycję Y palca
+    }, { passive: true });
+
+    // Kiedy użytkownik puszcza ekran...
+    infoPanel.addEventListener('touchend', (e) => {
+        let endY = e.changedTouches[0].clientY; // Sprawdzamy, gdzie palec wylądował
+        
+        // Jeśli pozycja końcowa jest o 50 pikseli niżej niż początkowa (czyli zjechał w dół)
+        if (endY > startY + 50) {
+            infoPanel.classList.remove('visible');
+            infoPanel.classList.add('hidden');
+        }
+    }, { passive: true });
+
 });
