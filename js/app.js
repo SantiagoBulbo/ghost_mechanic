@@ -75,7 +75,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 position: "-0.5 0.12 0.1", 
                 desc: "UWAGA: Układ znajduje się pod ciśnieniem! Otwieraj zbiornik wyrównawczy tylko na całkowicie zimnym silniku.",
                 icon: "assets/coolant.png"
-            }
+            },
+            { 
+                id: "punkt00", 
+                label: "00", 
+                color: "#FFFFFF", 
+                position: "0 0 0 ", 
+                desc: "",
+                icon: ""
+            },
         ]
     };
 
