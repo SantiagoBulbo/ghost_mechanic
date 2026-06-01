@@ -10,23 +10,35 @@ document.addEventListener("DOMContentLoaded", () => {
     const startBtn = document.getElementById('start-btn');
     const sceneEl = document.querySelector('a-scene');
 
-    // --- LOGIKA EKRANU POWITALNEGO I PAMIĘCI SESJI (SMART FIX) ---
-    // 1. Sprawdzamy, czy użytkownik już dzisiaj kliknął "Przejdź dalej"
+    // --- BEZPIECZNA FUNKCJA STARTUJĄCA MINDAR (BEZ RACE CONDITION) ---
+    const safeStartAR = () => {
+        const startSystem = () => {
+            if (sceneEl.systems && sceneEl.systems["mindar-image-system"]) {
+                sceneEl.systems["mindar-image-system"].start();
+            } else {
+                console.error("System MindAR nie został jeszcze zainicjalizowany!");
+            }
+        };
+
+        // Jeśli scena już się załadowała – odpalaj od razu
+        if (sceneEl.hasLoaded) {
+            startSystem();
+        } else {
+            // Jeśli jeszcze się ładuje – czekaj na oficjalne zdarzenie 'loaded' od A-Frame
+            sceneEl.addEventListener("loaded", startSystem);
+        }
+    };
+
+    // --- LOGIKA EKRANU POWITALNEGO I PAMIĘCI SESJI ---
     if (sessionStorage.getItem('arGhostStarted') === 'true') {
-        // Jeśli tak: od razu ukrywamy ekran powitalny
         splashScreen.classList.add('hidden');
-        
-        // Dajemy ułamek sekundy na inicjalizację A-Frame po restarcie i odpalamy AR!
-        setTimeout(() => {
-            sceneEl.systems["mindar-image-system"].start();
-        }, 100);
+        safeStartAR(); // Odpalamy bezpieczną funkcję
     }
 
-    // 2. Co się dzieje przy pierwszym kliknięciu (gdy ktoś wchodzi pierwszy raz)
     startBtn.addEventListener('click', () => {
-        sessionStorage.setItem('arGhostStarted', 'true'); // Zapisujemy w pamięci przeglądarki
+        sessionStorage.setItem('arGhostStarted', 'true');
         splashScreen.classList.add('hidden');
-        sceneEl.systems["mindar-image-system"].start();
+        safeStartAR(); // Odpalamy bezpieczną funkcję
     });
 
     // Baza danych ze ŚCIEŻKAMI DO PLIKÓW PNG
@@ -36,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: "oil", 
                 label: "Wlew oleju", 
                 color: "#ffee00", 
-                position: "-0.4 0.05 0.1", 
+                position: "-0.4 0.1 0.1", 
                 desc: "Pamiętaj, aby poziom oleju był zawsze między MIN a MAX. Używaj oleju zalecanego przez producenta samochodu.",
                 icon: "assets/oil.png" 
             },
@@ -44,15 +56,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: "oil_dipstick", 
                 label: "Bagnet oleju", 
                 color: "#f3a702", 
-                position: "-0.3 0.12 0.1", 
-                desc: "Bagnet służy do sprawdzania poziomu oleju.Pamiętaj aby samochód stał na poziomym terenie oraz silnik był zimny. Wyciągnij go, wytrzyj, włóż z powrotem i ponownie wyciągnij, aby odczytać poziom.",
+                position: "-0.3 0.07 0.1", 
+                desc: "Bagnet służy do sprawdzania poziomu oleju. Pamiętaj, aby samochód stał na poziomym terenie oraz silnik był zimny. Wyciągnij go, wytrzyj, włóż z powrotem i ponownie wyciągnij, aby odczytać poziom.",
                 icon: "assets/bagnet_oleju.png" 
             },
             { 
                 id: "washer", 
                 label: "Płyn spryskiwaczy", 
                 color: "#00BFFF", 
-                position: "-0.5 0.2 0", 
+                position: "0.5 -0.2 0", 
                 desc: "Używaj płynu zimowego (do -20°C). Korek ma zazwyczaj niebieski kolor i symbol szyby.",
                 icon: "assets/washer.png"
             },
@@ -60,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: "coolant", 
                 label: "Płyn chłodniczy", 
                 color: "#FF4500", 
-                position: "-0.5 0.12 0.1", 
+                position: "0.1 0.4 0.1", 
                 desc: "UWAGA: Układ znajduje się pod ciśnieniem! Otwieraj zbiornik wyrównawczy tylko na całkowicie zimnym silniku.",
                 icon: "assets/coolant.png"
             }
@@ -85,7 +97,6 @@ document.addEventListener("DOMContentLoaded", () => {
         uiButton.className = 'ui-marker-btn';
         uiButton.style.backgroundColor = marker.color; 
         
-        // Tworzymy tag <img> i wrzucamy do przycisku
         const imgIcon = document.createElement('img');
         imgIcon.src = marker.icon;
         uiButton.appendChild(imgIcon);
@@ -94,7 +105,6 @@ document.addEventListener("DOMContentLoaded", () => {
             evt.preventDefault();
             evt.stopPropagation();
             
-            // Funkcja, która ładuje nowe dane i wysuwa panel
             const showNewContent = () => {
                 infoTitle.innerText = marker.label;
                 infoDesc.innerText = marker.desc;
@@ -102,16 +112,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 infoPanel.classList.add('visible');
             };
 
-            // Sprawdzamy, czy panel jest już wysunięty
             if (infoPanel.classList.contains('visible')) {
-                // Jeśli tak: najpierw go chowamy...
                 infoPanel.classList.remove('visible');
                 infoPanel.classList.add('hidden');
-                
-                // ...czekamy 300 milisekund (tyle trwa zjazd w dół w CSS), a potem pokazujemy nowy!
                 setTimeout(showNewContent, 300);
             } else {
-                // Jeśli był schowany, po prostu go wysuwamy
                 showNewContent();
             }
         });
@@ -169,32 +174,24 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- RATUNKOWY HACK NA OBRACANIE EKRANU ---
-    // Nasłuchujemy zmiany orientacji urządzenia
+    // --- HACK NA OBRACANIE EKRANU ---
     window.addEventListener("orientationchange", () => {
-        // Czekamy pół sekundy, aż system telefonu skończy animację obracania
         setTimeout(() => {
-            window.location.reload(); // Odświeżamy stronę!
+            window.location.reload(); 
         }, 500);
     });
 
-    // --- OBSŁUGA GESTU SWIPE W DÓŁ (Przeciągnięcie palcem) ---
-    let startY = 0; // Tu zapiszemy, gdzie użytkownik położył palec
-
-    // Kiedy użytkownik dotyka panelu...
+    // --- OBSŁUGA GESTU SWIPE W DÓŁ ---
+    let startY = 0;
     infoPanel.addEventListener('touchstart', (e) => {
-        startY = e.touches[0].clientY; // Zapisujemy pozycję Y palca
+        startY = e.touches[0].clientY;
     }, { passive: true });
 
-    // Kiedy użytkownik puszcza ekran...
     infoPanel.addEventListener('touchend', (e) => {
-        let endY = e.changedTouches[0].clientY; // Sprawdzamy, gdzie palec wylądował
-        
-        // Jeśli pozycja końcowa jest o 50 pikseli niżej niż początkowa (czyli zjechał w dół)
+        let endY = e.changedTouches[0].clientY;
         if (endY > startY + 50) {
             infoPanel.classList.remove('visible');
             infoPanel.classList.add('hidden');
         }
     }, { passive: true });
-
 });
