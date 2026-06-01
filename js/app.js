@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: "oil", 
                 label: "Wlew oleju", 
                 color: "#ffee00", 
-                position: "-0.4 0.05 0.1", 
+                position: "0.3 0.12 0.1", 
                 desc: "Pamiętaj, aby poziom oleju był zawsze między MIN a MAX. Używaj oleju zalecanego przez producenta samochodu.",
                 icon: "assets/oil.png" 
             },
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: "oil_dipstick", 
                 label: "Bagnet oleju", 
                 color: "#f3a702", 
-                position: "-0.3 0.12 0.1", 
+                position: "-0.25 0.7 0.1", 
                 desc: "Bagnet służy do sprawdzania poziomu oleju. Pamiętaj, aby samochód stał na poziomym terenie oraz silnik był zimny. Wyciągnij go, wytrzyj, włóż z powrotem i ponownie wyciągnij, aby odczytać poziom.",
                 icon: "assets/bagnet_oleju.png" 
             },
@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
         wrapper.setAttribute('position', marker.position); 
 
         const visualSphere = document.createElement('a-sphere');
-        visualSphere.setAttribute('radius', '0.02'); 
+        visualSphere.setAttribute('radius', '0.015'); 
         visualSphere.setAttribute('color', marker.color);
         visualSphere.setAttribute('position', '0 0 0'); 
         
