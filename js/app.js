@@ -10,11 +10,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const startBtn = document.getElementById('start-btn');
     const sceneEl = document.querySelector('a-scene');
 
-    startBtn.addEventListener('click', () => {
-        // 1. Znikamy ekran powitalny
+    // --- LOGIKA EKRANU POWITALNEGO I PAMIĘCI SESJI (SMART FIX) ---
+    // 1. Sprawdzamy, czy użytkownik już dzisiaj kliknął "Przejdź dalej"
+    if (sessionStorage.getItem('arGhostStarted') === 'true') {
+        // Jeśli tak: od razu ukrywamy ekran powitalny
         splashScreen.classList.add('hidden');
         
-        // 2. Ręcznie wymuszamy start silnika MindAR i prośbę o kamerę
+        // Dajemy ułamek sekundy na inicjalizację A-Frame po restarcie i odpalamy AR!
+        setTimeout(() => {
+            sceneEl.systems["mindar-image-system"].start();
+        }, 100);
+    }
+
+    // 2. Co się dzieje przy pierwszym kliknięciu (gdy ktoś wchodzi pierwszy raz)
+    startBtn.addEventListener('click', () => {
+        sessionStorage.setItem('arGhostStarted', 'true'); // Zapisujemy w pamięci przeglądarki
+        splashScreen.classList.add('hidden');
         sceneEl.systems["mindar-image-system"].start();
     });
 
@@ -27,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 color: "#ffee00", 
                 position: "-0.4 0.1 0.1", 
                 desc: "Pamiętaj, aby poziom oleju był zawsze między MIN a MAX. Używaj oleju zalecanego przez producenta samochodu.",
-                icon: "assets/oil.png" // Podmień na swoje nazwy!
+                icon: "assets/oil.png" 
             },
             { 
                 id: "oil_dipstick", 
@@ -35,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 color: "#f3a702", 
                 position: "-0.3 0.07 0.1", 
                 desc: "Bagnet służy do sprawdzania poziomu oleju.Pamiętaj aby samochód stał na poziomym terenie oraz silnik był zimny. Wyciągnij go, wytrzyj, włóż z powrotem i ponownie wyciągnij, aby odczytać poziom.",
-                icon: "assets/bagnet_oleju.png" // Podmień na swoje nazwy!
+                icon: "assets/bagnet_oleju.png" 
             },
             { 
                 id: "washer", 
@@ -157,6 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
             } catch (err) { console.error("Błąd włączania latarki:", err); }
         });
     }
+
     // --- RATUNKOWY HACK NA OBRACANIE EKRANU ---
     // Nasłuchujemy zmiany orientacji urządzenia
     window.addEventListener("orientationchange", () => {
