@@ -52,35 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
         sessionStorage.setItem('arGhostStarted', 'true');
         splashScreen.classList.add('hidden');
         safeStartAR();
-    // --- BEZPIECZNA FUNKCJA STARTUJĄCA MINDAR (BEZ RACE CONDITION) ---
-    const safeStartAR = () => {
-        const startSystem = () => {
-            if (sceneEl.systems && sceneEl.systems["mindar-image-system"]) {
-                sceneEl.systems["mindar-image-system"].start();
-            } else {
-                console.error("System MindAR nie został jeszcze zainicjalizowany!");
-            }
-        };
-
-        // Jeśli scena już się załadowała – odpalaj od razu
-        if (sceneEl.hasLoaded) {
-            startSystem();
-        } else {
-            // Jeśli jeszcze się ładuje – czekaj na oficjalne zdarzenie 'loaded' od A-Frame
-            sceneEl.addEventListener("loaded", startSystem);
-        }
-    };
-
-    // --- LOGIKA EKRANU POWITALNEGO I PAMIĘCI SESJI ---
-    if (sessionStorage.getItem('arGhostStarted') === 'true') {
-        splashScreen.classList.add('hidden');
-        safeStartAR(); // Odpalamy bezpieczną funkcję
-    }
-
-    startBtn.addEventListener('click', () => {
-        sessionStorage.setItem('arGhostStarted', 'true');
-        splashScreen.classList.add('hidden');
-        safeStartAR(); // Odpalamy bezpieczną funkcję
     });
 
     // --- BAZA DANYCH (z drugiego kodu – nowe pozycje, dodatkowy marker aq) ---
@@ -124,18 +95,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 color: "#8f8c8b", 
                 position: "0.24 0.08 -0.3", 
                 desc: "W razie awarii, zdejmij pokrywę akumulatora oraz wypnij klemy, najpierw ujemną (czarna), potem dodatnią (czerwona).",
-                desc: "W razie awarii, zdejmij pokrywę akumulatora oraz wypnij klemy, najpierw ujemną (czarna), potem dodatnią (czerwona). ",
                 icon: "assets/aq.png"
             }
-            // { 
-            //     id: "punkt00", 
-            //     label: "00", 
-            //     color: "#FFFFFF", 
-            //     position: "0 0 0 ", 
-            //     desc: "",
-            //     icon: ""
-            // },
-            
         ]
     };
 
@@ -155,7 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const uiButton = document.createElement('div');
         uiButton.className = 'ui-marker-btn';
         uiButton.style.backgroundColor = marker.color; 
-        
         const imgIcon = document.createElement('img');
         imgIcon.src = marker.icon;
         uiButton.appendChild(imgIcon);
@@ -163,14 +123,12 @@ document.addEventListener("DOMContentLoaded", () => {
         uiButton.addEventListener('click', (evt) => {
             evt.preventDefault();
             evt.stopPropagation();
-            
             const showNewContent = () => {
                 infoTitle.innerText = marker.label;
                 infoDesc.innerText = marker.desc;
                 infoPanel.classList.remove('hidden');
                 infoPanel.classList.add('visible');
             };
-
             if (infoPanel.classList.contains('visible')) {
                 infoPanel.classList.remove('visible');
                 infoPanel.classList.add('hidden');
@@ -272,24 +230,4 @@ document.addEventListener("DOMContentLoaded", () => {
             updateMarkersVisibility();
         });
     }
-    // --- HACK NA OBRACANIE EKRANU ---
-    window.addEventListener("orientationchange", () => {
-        setTimeout(() => {
-            window.location.reload(); 
-        }, 500);
-    });
-
-    // --- OBSŁUGA GESTU SWIPE W DÓŁ ---
-    let startY = 0;
-    infoPanel.addEventListener('touchstart', (e) => {
-        startY = e.touches[0].clientY;
-    }, { passive: true });
-
-    infoPanel.addEventListener('touchend', (e) => {
-        let endY = e.changedTouches[0].clientY;
-        if (endY > startY + 50) {
-            infoPanel.classList.remove('visible');
-            infoPanel.classList.add('hidden');
-        }
-    }, { passive: true });
-});});
+});
