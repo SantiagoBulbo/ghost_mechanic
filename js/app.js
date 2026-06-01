@@ -76,6 +76,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 desc: "UWAGA: Układ znajduje się pod ciśnieniem! Otwieraj zbiornik wyrównawczy tylko na całkowicie zimnym silniku.",
                 icon: "assets/coolant.png"
             },
+            { 
+                id: "aq", 
+                label: "Akumulator", 
+                color: "#8f8c8b", 
+                position: "0.24 0.08 0.1", 
+                desc: "W razie awarii, zdejmij pokrywę akumulatora oraz wypnij klemy, najpierw ujemną (czarna), potem dodatnią (czerwona). ",
+                icon: "assets/aq.png"
+            }
             // { 
             //     id: "punkt00", 
             //     label: "00", 
@@ -84,14 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
             //     desc: "",
             //     icon: ""
             // },
-            { 
-                id: "aq", 
-                label: "Akumulator", 
-                color: "#8f8c8b", 
-                position: "0.23 0.07 0.1", 
-                desc: "UWAGA: Układ znajduje się pod ciśnieniem! Otwieraj zbiornik wyrównawczy tylko na całkowicie zimnym silniku.",
-                icon: "assets/coolant.png"
-            }
+            
         ]
     };
 
