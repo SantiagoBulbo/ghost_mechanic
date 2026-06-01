@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: "coolant", 
                 label: "Płyn chłodniczy", 
                 color: "#FF4500", 
-                position: "-0.4 0.07 0.1", 
+                position: "-0.38 0.07 0.1", 
                 desc: "UWAGA: Układ znajduje się pod ciśnieniem! Otwieraj zbiornik wyrównawczy tylko na całkowicie zimnym silniku.",
                 icon: "assets/coolant.png"
             },
