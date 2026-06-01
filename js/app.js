@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: "oil", 
                 label: "Wlew oleju", 
                 color: "#ffee00", 
-                position: "-0.22 0.07 0.1", 
+                position: "-0.235 0.07 0.1", 
                 desc: "Pamiętaj, aby poziom oleju był zawsze między MIN a MAX. Używaj oleju zalecanego przez producenta samochodu.",
                 icon: "assets/oil.png" 
             },
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: "oil_dipstick", 
                 label: "Bagnet oleju", 
                 color: "#f3a702", 
-                position: "-0.2 0.01 0.1", 
+                position: "-0.22 0.01 0.1", 
                 desc: "Bagnet służy do sprawdzania poziomu oleju. Pamiętaj, aby samochód stał na poziomym terenie oraz silnik był zimny. Wyciągnij go, wytrzyj, włóż z powrotem i ponownie wyciągnij, aby odczytać poziom.",
                 icon: "assets/bagnet_oleju.png" 
             },
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: "washer", 
                 label: "Płyn spryskiwaczy", 
                 color: "#00BFFF", 
-                position: "-0.5 0.2 0", 
+                position: "-0.44 -0.03 0.1", 
                 desc: "Używaj płynu zimowego (do -20°C). Korek ma zazwyczaj niebieski kolor i symbol szyby.",
                 icon: "assets/washer.png"
             },
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: "coolant", 
                 label: "Płyn chłodniczy", 
                 color: "#FF4500", 
-                position: "-0.5 0.12 0.1", 
+                position: "-0.4 0.07 0.1", 
                 desc: "UWAGA: Układ znajduje się pod ciśnieniem! Otwieraj zbiornik wyrównawczy tylko na całkowicie zimnym silniku.",
                 icon: "assets/coolant.png"
             },
