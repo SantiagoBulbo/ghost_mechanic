@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: "aq", 
                 label: "Akumulator", 
                 color: "#8f8c8b", 
-                position: "0.26 0.09 -0.3", 
+                position: "0.29 0.13 -0.3", 
                 desc: "W razie awarii, zdejmij pokrywę akumulatora oraz wypnij klemy, najpierw ujemną (czarna), potem dodatnią (czerwona).",
                 icon: "assets/aq.png"
             }
