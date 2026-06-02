@@ -9,8 +9,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const splashScreen = document.getElementById('splash-screen');
     const startBtn = document.getElementById('start-btn');
     const sceneEl = document.querySelector('a-scene');
+    const assistModeBtn = document.getElementById('assist-mode-btn');
+    const assistOverlay = document.getElementById('assist-overlay');
 
-    // --- BEZPIECZNA FUNKCJA STARTUJĄCA MINDAR (BEZ RACE CONDITION) ---
+    // --- STAN ASYSTY ---
+    let isTargetFound = false;
+    let assistModeActive = false;
+
+    // Funkcja aktualizująca widoczność przycisków markerów (zależna od targetu lub asysty)
+    function updateMarkersVisibility() {
+        if (!buttonsContainer) return;
+        if (isTargetFound || assistModeActive) {
+            buttonsContainer.classList.add('visible');
+        } else {
+            buttonsContainer.classList.remove('visible');
+        }
+    }
+
+    // --- BEZPIECZNE URUCHOMIENIE MINDAR (z drugiego kodu) ---
     const safeStartAR = () => {
         const startSystem = () => {
             if (sceneEl.systems && sceneEl.systems["mindar-image-system"]) {
@@ -19,29 +35,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error("System MindAR nie został jeszcze zainicjalizowany!");
             }
         };
-
-        // Jeśli scena już się załadowała – odpalaj od razu
         if (sceneEl.hasLoaded) {
             startSystem();
         } else {
-            // Jeśli jeszcze się ładuje – czekaj na oficjalne zdarzenie 'loaded' od A-Frame
             sceneEl.addEventListener("loaded", startSystem);
         }
     };
 
-    // --- LOGIKA EKRANU POWITALNEGO I PAMIĘCI SESJI ---
+    // --- LOGIKA EKRANU POWITALNEGO ---
     if (sessionStorage.getItem('arGhostStarted') === 'true') {
         splashScreen.classList.add('hidden');
-        safeStartAR(); // Odpalamy bezpieczną funkcję
+        safeStartAR();
     }
 
     startBtn.addEventListener('click', () => {
         sessionStorage.setItem('arGhostStarted', 'true');
         splashScreen.classList.add('hidden');
-        safeStartAR(); // Odpalamy bezpieczną funkcję
+        safeStartAR();
     });
 
-    // Baza danych ze ŚCIEŻKAMI DO PLIKÓW PNG
+    // --- BAZA DANYCH (z drugiego kodu – nowe pozycje, dodatkowy marker aq) ---
     const carData = {
         markers: [
             { 
@@ -80,40 +93,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 id: "aq", 
                 label: "Akumulator", 
                 color: "#8f8c8b", 
-                position: "0.24 0.08 -0.3", 
-                desc: "W razie awarii, zdejmij pokrywę akumulatora oraz wypnij klemy, najpierw ujemną (czarna), potem dodatnią (czerwona). ",
+                position: "0.29 0.13 -0.3", 
+                desc: "W razie awarii, zdejmij pokrywę akumulatora oraz wypnij klemy, najpierw ujemną (czarna), potem dodatnią (czerwona).",
                 icon: "assets/aq.png"
             }
-            // { 
-            //     id: "punkt00", 
-            //     label: "00", 
-            //     color: "#FFFFFF", 
-            //     position: "0 0 0 ", 
-            //     desc: "",
-            //     icon: ""
-            // },
-            
         ]
     };
 
+    // --- GENEROWANIE KULEK 3D I PRZYCISKÓW MARKERÓW ---
     carData.markers.forEach((marker) => {
-        // --- 1. GENEROWANIE OBIEKTU 3D W AR (Kulki) ---
+        // Kulka 3D (promień 0.015 – zgodny z drugim kodem)
         const wrapper = document.createElement('a-entity');
         wrapper.setAttribute('position', marker.position); 
-
         const visualSphere = document.createElement('a-sphere');
         visualSphere.setAttribute('radius', '0.015'); 
         visualSphere.setAttribute('color', marker.color);
         visualSphere.setAttribute('position', '0 0 0'); 
-        
         wrapper.appendChild(visualSphere);
         anchor.appendChild(wrapper);
 
-        // --- 2. GENEROWANIE PRZYCISKU 2D Z PLIKIEM PNG ---
+        // Przycisk UI (prawe kółko)
         const uiButton = document.createElement('div');
         uiButton.className = 'ui-marker-btn';
         uiButton.style.backgroundColor = marker.color; 
-        
         const imgIcon = document.createElement('img');
         imgIcon.src = marker.icon;
         uiButton.appendChild(imgIcon);
@@ -121,14 +123,12 @@ document.addEventListener("DOMContentLoaded", () => {
         uiButton.addEventListener('click', (evt) => {
             evt.preventDefault();
             evt.stopPropagation();
-            
             const showNewContent = () => {
                 infoTitle.innerText = marker.label;
                 infoDesc.innerText = marker.desc;
                 infoPanel.classList.remove('hidden');
                 infoPanel.classList.add('visible');
             };
-
             if (infoPanel.classList.contains('visible')) {
                 infoPanel.classList.remove('visible');
                 infoPanel.classList.add('hidden');
@@ -137,10 +137,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 showNewContent();
             }
         });
-
         buttonsContainer.appendChild(uiButton);
     });
 
+    // --- ZAMYKANIE PANELU ---
     closeBtn.addEventListener('click', (event) => {
         event.preventDefault();
         infoPanel.classList.remove('visible');
@@ -148,23 +148,26 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     window.addEventListener('click', (e) => {
-        if (e.target.id !== 'flashlight-btn' && !e.target.closest('#info-panel') && !e.target.closest('.ui-marker-btn')) {
+        if (e.target.id !== 'flashlight-btn' && e.target.id !== 'assist-mode-btn' && !e.target.closest('#info-panel') && !e.target.closest('.ui-marker-btn')) {
             infoPanel.classList.remove('visible');
             infoPanel.classList.add('hidden');
         }
     });
 
+    // --- EVENTY AR (współpraca z asystą) ---
     anchor.addEventListener("targetFound", () => {
-        buttonsContainer.classList.add('visible');
+        isTargetFound = true;
+        updateMarkersVisibility();
     });
 
     anchor.addEventListener("targetLost", () => {
-        buttonsContainer.classList.remove('visible');
+        isTargetFound = false;
+        updateMarkersVisibility();
         infoPanel.classList.remove('visible');
         infoPanel.classList.add('hidden');
     });
 
-    // Latarka
+    // --- LATARKA ---
     let isTorchOn = false;
     if (flashlightBtn) {
         flashlightBtn.addEventListener('click', async (e) => {
@@ -185,30 +188,46 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 isTorchOn = !isTorchOn;
                 await track.applyConstraints({ advanced: [{ torch: isTorchOn }] });
-                if (isTorchOn) { flashlightBtn.classList.add('active'); } 
-                else { flashlightBtn.classList.remove('active'); }
+                flashlightBtn.classList.toggle('active', isTorchOn);
             } catch (err) { console.error("Błąd włączania latarki:", err); }
         });
     }
 
-    // --- HACK NA OBRACANIE EKRANU ---
+    // --- ORIENTACJA I SWIPE (z drugiego kodu, ale bez duplikacji) ---
     window.addEventListener("orientationchange", () => {
         setTimeout(() => {
-            window.location.reload(); 
+            window.location.reload();
         }, 500);
     });
 
-    // --- OBSŁUGA GESTU SWIPE W DÓŁ ---
     let startY = 0;
-    infoPanel.addEventListener('touchstart', (e) => {
-        startY = e.touches[0].clientY;
-    }, { passive: true });
+    if (infoPanel) {
+        infoPanel.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].clientY;
+        }, { passive: true });
+        infoPanel.addEventListener('touchend', (e) => {
+            let endY = e.changedTouches[0].clientY;
+            if (endY > startY + 50) {
+                infoPanel.classList.remove('visible');
+                infoPanel.classList.add('hidden');
+            }
+        }, { passive: true });
+    }
 
-    infoPanel.addEventListener('touchend', (e) => {
-        let endY = e.changedTouches[0].clientY;
-        if (endY > startY + 50) {
-            infoPanel.classList.remove('visible');
-            infoPanel.classList.add('hidden');
-        }
-    }, { passive: true });
+    // ==================== TRYB ASYSTY (z pierwszego kodu) ====================
+    if (assistModeBtn && assistOverlay) {
+        assistModeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            assistModeActive = !assistModeActive;
+            if (assistModeActive) {
+                assistModeBtn.classList.add('active');
+                assistOverlay.classList.add('active');
+            } else {
+                assistModeBtn.classList.remove('active');
+                assistOverlay.classList.remove('active');
+            }
+            updateMarkersVisibility();
+        });
+    }
 });
